@@ -7,9 +7,9 @@ import os.path
 import sys
 
 urls = [
-        'https://raw.githubusercontent.com/crcx/parable/master/py/parable.py',
-        'https://raw.githubusercontent.com/crcx/parable/master/py/stdlib.p',
-        'https://raw.githubusercontent.com/crcx/parable/master/py/gen-snapshot.py',
+        'https://raw.githubusercontent.com/crcx/parable/master/source/py/parable.py',
+        'https://raw.githubusercontent.com/crcx/parable/master/source/py/stdlib.p',
+        'https://raw.githubusercontent.com/crcx/parable/master/source/py/gen-snapshot.py',
        ]
 
 print('Downloading')
