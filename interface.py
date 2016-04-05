@@ -14,7 +14,7 @@ from os.path import expanduser
 def save_snapshot(filename):
     j = json.dumps({"symbols": dictionary, \
                     "errors": errors, \
-                    "stack_values": stack, \
+                    "stack": stack, \
                     "memory_contents": memory_values, \
                     "memory_types": memory_types, \
                     "memory_map": memory_map, \
@@ -51,7 +51,7 @@ def load_snapshot(filename):
     j = json.loads(open(filename, 'r').read())
     dictionary = j['symbols']
     errors = j['errors']
-    stack = j['stack_values']
+    stack = j['stack']
     memory_values = j['memory_contents']
     memory_types = j['memory_types']
     memory_map = j['memory_map']
@@ -75,7 +75,7 @@ def bootstrap(s):
 
     dictionary = j['symbols']
     errors = j['errors']
-    stack = j['stack_values']
+    stack = j['stack']
     memory_values = j['memory_contents']
     memory_types = j['memory_types']
     memory_map = j['memory_map']
