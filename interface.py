@@ -156,6 +156,24 @@ def revert():
 
 # -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 
+def get_tags_for(pat, textmate=False):
+    tags = []
+    matches = []
+    for root, dir, filenames in os.walk('.'):
+        for filename in fnmatch.filter(filenames, pat):
+            matches.append(os.path.join(root, filename))
+    for f in matches:
+        print('Scanning ' + f + '...')
+        s = open(f, 'r').readlines()
+        i = 1
+        for l in s:
+#            if l.endswith('\' :\n'): tags.append(tag_for_colon(l, f, i, textmate))
+#            if l.strip().startswith('\'') and l.endswith(' .\n'): tags.append(tag_for_dot(l, f, i, textmate))
+            i = i + 1
+    return tags
+
+# -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+
 files = []
 
 def opcodes(slice, offset, opcode):
@@ -349,7 +367,16 @@ def get_input():
             s = s[:-2].strip() + ' '
             s = s + input()
         else:
-            done = True
+            braces = 0
+            tokens = s.strip().split(' ')
+            for t in tokens:
+                if t == '[': braces = braces + 1
+                if t == ']': braces = braces - 1
+            if braces == 0:
+                done = True
+            else:
+                s = s.strip() + ' '
+                s = s + input()
     return s
 
 
