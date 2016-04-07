@@ -23,30 +23,30 @@
 [ 'slurp-file' ] {
   [ 'FID' 'S' ] ::
 
-  [ "string:name - string:contents" \
-    dup file-exists? \
-    [ 'r' open-file !FID \
-      request !S @S pop drop \
-      @FID file-size [ @FID read-file @S push ] times \
-      @FID close-file \
-      @S :s \
-    ] \
-    [ drop '' duplicate-slice :s 'Unable to to locate file' abort<with-error> ] \
-    if \
-    "Read a file into a new slice" \
+  [ "string:name - string:contents"
+    dup file-exists?
+    [ 'r' open-file !FID
+      request !S @S pop drop
+      @FID file-size [ @FID read-file @S push ] times
+      @FID close-file
+      @S :s
+    ]
+    [ drop '' duplicate-slice :s 'Unable to to locate file' abort<with-error> ]
+    if
+    "Read a file into a new slice"
   ] 'slurp-file' :
 }
 
 
 "Command Line Arguments and System Integration"
-[ "- pointer"        `226 \
-  "Return an array of all command line arguments. Typically the \
-   first two items will be the scripting engine name and the source \
-   file being run." \
+[ "- pointer"        `226
+  "Return an array of all command line arguments. Typically the
+   first two items will be the scripting engine name and the source
+   file being run."
 ] 'sys.args' :
 
-[ "string - number"  `227 \
-  "Run an external program. Returns the execution status." \
+[ "string - number"  `227
+  "Run an external program. Returns the execution status."
 ] 'sys.run' :
 
 
@@ -69,17 +69,17 @@
 [ 'needs' ] {
   [ "s-sf" dup file-exists? ] 'present?' :
   [ "s-s"  @LibraryPath swap + ] '+path' :
-  [ "s-" \
-    dup word-exists? \
-    [ drop ] \
-    [ +path present? \
-      [ include ] \
-      [ '.md' + present? \
-        [ include ] \
-        [ drop ] if \
-      ] if \
-    ] if \
-    "Load a library" \
+  [ "s-"
+    dup word-exists?
+    [ drop ]
+    [ +path present?
+      [ include ]
+      [ '.md' + present?
+        [ include ]
+        [ drop ] if
+      ] if
+    ] if
+    "Load a library"
   ] 'needs' :
 }
 
@@ -90,51 +90,51 @@
 
   [ "-" @I zero? [ 'TOS\ \ \ ' ] [ '\ \ \ \ \ \ ' ] if display ] 'indicate' :
 
-  [ "-" \
-    @V pop \
-    [ [ [ bytecode?  ] [ "$` display" display                  ] ] \
-      [ [ remark?    ] [ $" display display $" display         ] ] \
-      [ [ string?    ] [ $' display display $' display         ] ] \
-      [ [ number?    ] [ $# display display                    ] ] \
-      [ [ character? ] [ $$ display display                    ] ] \
-      [ [ pointer?   ] [ "$& display" display                  ] ] \
-      [ [ flag?      ] [ display                               ] ] \
-      [ [ funcall?   ] [ "'CALL ' display $& display" display  ] ] \
-      [ [ true       ] [ 'Unknown type: ' display :n display   ] ] \
-    ] when tty.cr \
+  [ "-"
+    @V pop
+    [ [ [ bytecode?  ] [ "$` display" display                  ] ]
+      [ [ remark?    ] [ $" display display $" display         ] ]
+      [ [ string?    ] [ $' display display $' display         ] ]
+      [ [ number?    ] [ $# display display                    ] ]
+      [ [ character? ] [ $$ display display                    ] ]
+      [ [ pointer?   ] [ "$& display" display                  ] ]
+      [ [ flag?      ] [ display                               ] ]
+      [ [ funcall?   ] [ "'CALL ' display $& display" display  ] ]
+      [ [ true       ] [ 'Unknown type: ' display :n display   ] ]
+    ] when tty.cr
   ] 'display-cell' :
 
   [ "-" @I display tty.tab ] 'display-offset' :
 
-  [ "-" \
-    depth 1 - !I \
-    stack-values reverse !V \
-    depth [ indicate display-offset display-cell &I decrement ] times \
-    "Display the items on the stack" \
+  [ "-"
+    depth 1 - !I
+    stack-values reverse !V
+    depth [ indicate display-offset display-cell &I decrement ] times
+    "Display the items on the stack"
   ] '.s' :
 }
 
-[ "-" \
-  'allegory, (c)2013-2016 Charles Childers\n\n' display \
-  'on_startup.md' dup file-exists? \
-  [ include ] \
-  [ drop home-directory '/.parable/on_startup.md' + dup file-exists? [ include ] [ drop ] if ] if \
-  "Entry point for standalone applications (via turnkey)" \
+[ "-"
+  'allegory, (c)2013-2016 Charles Childers\n\n' display
+  'on_startup.md' dup file-exists?
+  [ include ]
+  [ drop home-directory '/.parable/on_startup.md' + dup file-exists? [ include ] [ drop ] if ] if
+  "Entry point for standalone applications (via turnkey)"
 ] 'allegory.on-start' :
 
 [ "-" .s "Exit point for standalone applications (via turnkey)" ] 'allegory.on-end' :
 
 
-[ 'open-file' 'close-file' 'read-file' 'write-file' 'file-position' 'file-seek' \
+[ 'open-file' 'close-file' 'read-file' 'write-file' 'file-position' 'file-seek'
   'file-size' 'delete-file' 'file-exists?' 'slurp-file' ] 'Files~' vocab
 
 [ 'display'  'tty.cr' 'tty.tab' ] 'ConsoleIO~' vocab
 
-[ '+warnings' '-warnings' '.s' 'bye' 'words' 'include' 'save-as' \
-  'restart' 'Files~' 'sys.args' 'sys.run' 'arg-count' 'get-arg' \
-  'value-for-key' 'get-environment-value' 'ConsoleIO~' 'time' \
-  'invoke<time>' 'needs' 'allegory.on-start' 'allegory.on-end' \
-  'home-directory' 'LibraryPath' 'needs<now>' \
+[ '+warnings' '-warnings' '.s' 'bye' 'words' 'include' 'save-as'
+  'restart' 'Files~' 'sys.args' 'sys.run' 'arg-count' 'get-arg'
+  'value-for-key' 'get-environment-value' 'ConsoleIO~' 'time'
+  'invoke<time>' 'needs' 'allegory.on-start' 'allegory.on-end'
+  'home-directory' 'LibraryPath' 'needs<now>'
 ] 'Allegory~' vocab
 
 &Allegory~ with
