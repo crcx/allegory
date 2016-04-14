@@ -154,23 +154,49 @@ def revert():
             files[i] = 0
         i = i + 1
 
-# -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+# -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-def get_tags_for(pat, textmate=False):
+ctags = []
+
+def determine_form(src):
+    form = 0
+    line = src.strip()
+    if line.endswith('\' :'): form = 1
+    if line.startswith('\'') and line.endswith(' .'): form = 2
+    if line.startswith('\'') and line.endswith(' var'): form = 3
+    if line.startswith('\'') and line.endswith(' var!'): form = 3
+    if line.startswith('[ \'') and line.endswith(' ::'): form = 4
+    return form
+
+
+def extract_tags(src, form):
     tags = []
-    matches = []
-    for root, dir, filenames in os.walk('.'):
-        for filename in fnmatch.filter(filenames, pat):
-            matches.append(os.path.join(root, filename))
-    for f in matches:
-        print('Scanning ' + f + '...')
-        s = open(f, 'r').readlines()
-        i = 1
-        for l in s:
-#            if l.endswith('\' :\n'): tags.append(tag_for_colon(l, f, i, textmate))
-#            if l.strip().startswith('\'') and l.endswith(' .\n'): tags.append(tag_for_dot(l, f, i, textmate))
-            i = i + 1
+    tokens = src.strip().split(' ')
+    if form == 1 or form == 3:
+        token = tokens[-2:][0:1][0]
+        tags.append(token[1:-1])
+    elif form == 2:
+        token = tokens[0:1][0]
+        tags.append(token[1:-1])
+    elif form == 4:
+        token = tokens[1:-2]
+        for t in token:
+            if t != '':
+                tags.append(t[1:-1])
     return tags
+
+
+def get_tags_in(fn):
+    tags = []
+    with open(fn, 'r') as file:
+        lines = file.readlines()
+        for l in lines:
+            form = determine_form(l)
+            if form > 0:
+                for tag in extract_tags(l, form):
+                    tags.append((tag, fn))
+    return tags
+
 
 # -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 
@@ -279,6 +305,8 @@ def opcodes(slice, offset, opcode):
     elif opcode == 9003:
         name = slice_to_string(stack_pop())
         load_file(name)
+        global ctags
+        ctags = ctags + get_tags_in(name)
     elif opcode == 9004:
         save_snapshot(slice_to_string(stack_pop()))
     elif opcode == 9005:
@@ -290,6 +318,15 @@ def opcodes(slice, offset, opcode):
     elif opcode == 9006:
         revert()
         bootstrap(stdlib)
+    elif opcode == 9007:
+        s = slice_to_string(stack_pop())
+        match = False
+        for tag in ctags:
+            if tag[0] == s and not match:
+                stack_push(string_to_slice(tag[1]), TYPE_STRING)
+                match = True
+        if not match:
+            stack_push(string_to_slice('(no source found)'), TYPE_STRING)
     return offset
 
 # -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
@@ -438,3 +475,4 @@ if __name__ == '__main__':
         scripting()
 
     sys.stdout.flush()
+
