@@ -6,7 +6,7 @@
 [ "s-"   `9003 "Evaluate the contents of a file as Parable source" ] 'include' :
 [ "s-"   `9004 "Save the current session to a new script" ] 'save-as' :
 [ "...-" `9006 "Soft restart from the embedded snapshot" ] 'restart' :
-[ "s-s"  `9007 "Find the filename a word was defined in" ] 'ptags.lookup' :
+[ "s-sn"  `9007 "Find the filename and line # a word was defined in" ] 'ptags.lookup' :
 
 [ "-s"  `200 "Get user home directory" ] 'home-directory' :
 

@@ -199,11 +199,13 @@ def get_tags_in(fn):
     tags = []
     with open(fn, 'r') as file:
         lines = file.readlines()
+        i = 1
         for l in lines:
             form = determine_form(l)
             if form > 0:
                 for tag in extract_tags(l, form):
-                    tags.append((tag, fn))
+                    tags.append((tag, fn, i))
+            i = i + 1
     return tags
 
 
@@ -333,6 +335,7 @@ def opcodes(slice, offset, opcode):
         for tag in ctags:
             if tag[0] == s and not match:
                 stack_push(string_to_slice(tag[1]), TYPE_STRING)
+                stack_push(tag[2], TYPE_NUMBER)
                 match = True
         if not match:
             stack_push(string_to_slice('(no source found)'), TYPE_STRING)
