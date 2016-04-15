@@ -24,22 +24,23 @@ Parable provides two functions for accessing the entire dictionary: **vm.dict&lt
 [ 'marker' 'anew' ] 'Marker~' {
   [ 'Dict' ] ::
 
-  [ "p-" \
-    !Dict \
-    vm.dict<names> hide-words \
-    [ 0 @Dict head length? 1 - range ] [ dup @Dict head swap fetch [ @Dict tail swap fetch ] dip : ] times<with-index> \
+  [ "p-"
+    !Dict
+    vm.dict<names> hide-words
+    [ 0 @Dict head length? 1 - range ]
+    [ dup @Dict head swap fetch [ @Dict tail swap fetch ] dip : ] times<with-index>
   ] 'restore-marker' :
 
-  [ "s-" \
-    vm.dict<names> vm.dict<slices> cons &restore-marker curry . \
-    "A marker is a function that resets the dictionary to the state it was \
-     in prior to the creation of the marker." \
+  [ "s-"
+    vm.dict<names> vm.dict<slices> cons &restore-marker curry .
+    "A marker is a function that resets the dictionary to the state it was
+     in prior to the creation of the marker."
   ] 'marker' :
 
-  [ "s-" \
-    dup word-exists? [ dup lookup-word invoke ] if-true marker \
-    "If the specified name exists, remove it and all subsequent names. Then \
-     create a new marker with the specified name." \
+  [ "s-"
+    dup word-exists? [ dup lookup-word invoke ] if-true marker
+    "If the specified name exists, remove it and all subsequent names. Then
+     create a new marker with the specified name."
   ] 'anew' :
 }}
 ````
