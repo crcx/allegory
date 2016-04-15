@@ -158,6 +158,15 @@ def revert():
 
 ctags = []
 
+def load_tagfile():
+    global ctags
+    if os.path.exists('tags'):
+        with open('tags', 'r') as f:
+            for line in f.readlines():
+                ctags.append(line.split('\t'))
+    print(ctags)
+
+
 def determine_form(src):
     form = 0
     line = src.strip()
@@ -468,6 +477,8 @@ if __name__ == '__main__':
 
     prepare_slices()
     prepare_dictionary()
+
+    load_tagfile()
 
     if len(sys.argv) < 2:
         interactive()
