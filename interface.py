@@ -166,6 +166,20 @@ def load_tagfile():
                 ctags.append(line.split('\t'))
 
 
+def tag(tag):
+    name = tag[0]
+    file = os.getcwd() + '/' + tag[1][2:]
+    line = tag[2]
+    return name + '\t' + file + '\t' + str(line)
+
+
+def write_tagfile():
+    if os.path.exists('tags'):
+        with open('tags', 'w') as f:
+            for l in sorted(ctags):
+                f.write(tag(l) + '\n')
+
+
 def determine_form(src):
     form = 0
     line = src.strip()
@@ -309,6 +323,7 @@ def opcodes(slice, offset, opcode):
         xt = lookup_pointer('allegory.on-end')
         if xt != -1:
             interpret(xt, opcodes)
+        write_tagfile()
         exit()
     elif opcode == 9002:
         dump_dict()
@@ -444,6 +459,7 @@ def scripting():
     xt = lookup_pointer('allegory.on-end')
     if xt != -1:
         interpret(xt, opcodes)
+    write_tagfile()
 
 
 def interactive():
