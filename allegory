@@ -2204,6 +2204,11 @@ def opcodes(slice, offset, opcode):
         load_file(name)
         global ctags
         ctags = ctags + get_tags_in(name)
+        n = []
+        for tag in ctags:
+            if not tag in n:
+                n.append(tag)
+        ctags = n
     elif opcode == 9004:
         save_snapshot(slice_to_string(stack_pop()))
     elif opcode == 9005:
