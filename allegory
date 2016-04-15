@@ -2050,7 +2050,6 @@ def load_tagfile():
         with open('tags', 'r') as f:
             for line in f.readlines():
                 ctags.append(line.split('\t'))
-    print(ctags)
 
 
 def determine_form(src):
