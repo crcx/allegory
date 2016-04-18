@@ -2276,7 +2276,7 @@ def opcodes(slice, offset, opcode):
         for tag in ctags:
             if tag[0] == s and not match:
                 stack_push(string_to_slice(tag[1]), TYPE_STRING)
-                stack_push(tag[2], TYPE_NUMBER)
+                stack_push(float(tag[2]), TYPE_NUMBER)
                 match = True
         if not match:
             stack_push(string_to_slice('(no source found)'), TYPE_STRING)
