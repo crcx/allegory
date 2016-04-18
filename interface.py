@@ -370,8 +370,7 @@ def allegory_evaluate(src):
     elif src == "-ignore":
         ignore_depth = ignore_depth - 1
     elif ignore_depth <= 0:
-        slice = request_slice()
-        interpret(compile(src, slice), opcodes)
+        interpret(compile(src), opcodes)
     if ignore_depth < 0:
         ignore_depth = 0
 
@@ -420,7 +419,7 @@ def load_file(name):
 
 def evaluate(s):
     try:
-        interpret(compile(s, request_slice()))
+        interpret(compile(s))
     except:
         sys.stdout.write("\n")
         pass
