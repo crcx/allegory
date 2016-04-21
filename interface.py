@@ -473,6 +473,7 @@ def interactive():
 
     if turnkey:
         if os.path.exists('on_startup.md'):  load_file('on_startup.md')
+        elif os.path.exists('on_startup.p'):  load_file('on_startup.p')
 
     while True:
         try:
