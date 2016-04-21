@@ -9,6 +9,8 @@ import os
 import sys
 from os.path import expanduser
 
+turnkey=True
+
 # -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 
 def save_snapshot(filename):
@@ -28,6 +30,8 @@ def save_snapshot(filename):
         for line in orig:
             if line.startswith("stdlib"):
                 file.write('stdlib="' + str(base64.b64encode(c)).replace("b'", "").replace("'", "") + '"')
+            elif line.startswith("turnkey"):
+                file.write("turnkey=False")
             else:
                 file.write(line)
             file.write('\n')
@@ -466,6 +470,9 @@ def interactive():
         pass
 
     bootstrap(stdlib)
+
+    if turnkey:
+        if os.path.exists('on_startup.md'):  load_file('on_startup.md')
 
     while True:
         try:
