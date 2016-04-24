@@ -176,7 +176,7 @@ def tag(t):
 def write_tagfile():
     if os.path.exists('tags'):
         with open('tags', 'w') as f:
-            for l in sorted(ctags):
+            for l in ctags:
                 f.write(tag(l))
 
 
