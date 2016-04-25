@@ -171,7 +171,7 @@ def load_tagfile():
 
 
 def tag(t):
-    return t[0] + '\t' + t[1] + '\t' + t[2]
+    return '{1}\t{2}\t{3}'.format(t[0], t[1], t[2])
 
 def write_tagfile():
     if os.path.exists('tags'):
@@ -399,13 +399,13 @@ def load_file(name):
         if name.endswith('.md'): lines = condense_lines(extract_from_markdown(name))
         else: lines = condense_lines(open(name).readlines())
         for l in lines:
-            try:
+#            try:
                 if l != "#!/usr/bin/env allegory" and should_abort == False:
                     allegory_evaluate(l)
-            except:
-                e = sys.exc_info()[0]
-                if e == SystemExit: exit()
-                pass
+#            except:
+#                e = sys.exc_info()[0]
+#                if e == SystemExit: exit()
+#                pass
         for e in errors:
             sys.stdout.write('IN: ' + name + ', ' + e + '\n')
         clear_errors()
@@ -462,6 +462,7 @@ def scripting():
 
 
 def interactive():
+    global turnkey
     try:
         import readline
         readline.set_completer(completer)
@@ -472,8 +473,10 @@ def interactive():
     bootstrap(stdlib)
 
     if turnkey:
-        if os.path.exists('on_startup.md'):  load_file('on_startup.md')
-        elif os.path.exists('on_startup.p'):  load_file('on_startup.p')
+        if os.path.exists('on_startup.md'):
+            load_file('on_startup.md')
+        elif os.path.exists('on_startup.p'):
+            load_file('on_startup.p')
         elif os.path.exists(expanduser('~') + '/on_startup.md'):
             load_file(expanduser('~') + '/on_startup.md')
         elif os.path.exists(expanduser('~') + '/on_startup.p'):

@@ -111,9 +111,6 @@
 "-+-+-++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-"
 [ "-"
   'allegory, (c)2013-2016 Charles Childers\n\n' display
-  'on_startup.md' dup file-exists?
-  [ include ]
-  [ drop home-directory '/.parable/on_startup.md' + dup file-exists? [ include ] [ drop ] if ] if
   "Entry point for standalone applications (via turnkey)"
 ] 'allegory.on-start' :
 
