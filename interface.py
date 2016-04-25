@@ -171,13 +171,14 @@ def load_tagfile():
 
 
 def tag(t):
-    return '{1}\t{2}\t{3}'.format(t[0], t[1], t[2])
+    return '\t'.join(map(str,t))
+
 
 def write_tagfile():
     if os.path.exists('tags'):
         with open('tags', 'w') as f:
             for l in ctags:
-                f.write(tag(l))
+                f.write(tag(l) + '\n')
 
 
 def determine_form(src):
