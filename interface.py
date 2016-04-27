@@ -324,7 +324,7 @@ def opcodes(slice, offset, opcode):
         xt = lookup_pointer('allegory.on-end')
         if xt != -1:
             interpret(xt, opcodes)
-        write_tagfile()
+#        write_tagfile()
         exit()
     elif opcode == 9002:
         dump_dict()
@@ -460,7 +460,7 @@ def scripting():
     xt = lookup_pointer('allegory.on-end')
     if xt != -1:
         interpret(xt, opcodes)
-    write_tagfile()
+#    write_tagfile()
 
 
 def interactive():
@@ -513,7 +513,7 @@ if __name__ == '__main__':
     prepare_slices()
     prepare_dictionary()
 
-    load_tagfile()
+#    load_tagfile()
 
     if len(sys.argv) < 2:
         interactive()
