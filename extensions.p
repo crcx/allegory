@@ -1,5 +1,5 @@
 "-+-+-++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-"
-[ 20160400 ] 'Allegory' :
+[ 201605 ] 'Allegory' :
 
 [ "-"    `9001 "Exit Allegory" ] 'bye' :
 [ "-"    `9002 "Display a list of all named words" ] 'words' :
@@ -107,7 +107,7 @@
 [ 'lookup-tag' ] 'Tags~' {
   [ "s-sn"  `9007 "Find the filename and line # a word was defined in" ] 'lookup-tag' :
 }}
-'Tags~' hide-word
+&Tags~' with
 "-+-+-++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-"
 [ "-"
   'allegory, (c)2013-2016 Charles Childers\n\n' display
