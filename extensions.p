@@ -107,7 +107,7 @@
 [ 'lookup-tag' ] 'Tags~' {
   [ "s-sn"  `9007 "Find the filename and line # a word was defined in" ] 'lookup-tag' :
 }}
-&Tags~' with
+&Tags~ with
 "-+-+-++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-"
 [ "-"
   'allegory, (c)2013-2016 Charles Childers\n\n' display
