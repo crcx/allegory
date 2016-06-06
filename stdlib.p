@@ -1,3 +1,4 @@
+[ "-nnc"   2016 05 $_ ] 'ParableVersion' :
 [ "-"      `0  "Does nothing" ] 'nop' :
 [ "vt-v"   `1  "Convert a value to the specified type" ] 'set-type' :
 [ "v-vn"   `2  "Return the type constant for a value" ] 'type?' :
@@ -64,6 +65,33 @@
 [ "-p"     `64 "Return an array indicating which slices are allocated and which are free. Each index corresponds to a slice. If the stored value is 0, the slice is free. If 1, the slice is allocated." ] 'vm.memory<map>' :
 [ "-p"     `65 "Return an array indicating the size of each slice (in cells). Each index corresponds to a slice; the stored value is the length of the slice." ] 'vm.memory<sizes>' :
 [ "-p"     `66 "Return an array of slice numbers which are currently marked as allocated." ] 'vm.memory<allocated>' :
+[ "-n"  100 "Type constant" ] 'NUMBER' :
+[ "-n"  200 "Type constant" ] 'STRING' :
+[ "-n"  300 "Type constant" ] 'CHARACTER' :
+[ "-n"  400 "Type constant" ] 'POINTER' :
+[ "-n"  500 "Type constant" ] 'FLAG' :
+[ "-n"  600 "Type constant" ] 'BYTECODE' :
+[ "-n"  700 "Type constant" ] 'REMARK' :
+[ "-n"  800 "Type constant" ] 'FUNCALL' :
+[ "-n"    0 "Type constant" ] 'UNKNOWN' :
+[ "v-b" BYTECODE  set-type  "Convert value to a BYTECODE" ] ':b' :
+[ "v-n" NUMBER    set-type  "Convert value to a NUMBER" ] ':n' :
+[ "v-s" STRING    set-type  "Convert value to a STRING" ] ':s' :
+[ "v-c" CHARACTER set-type  "Convert value to a CHARACTER" ] ':c' :
+[ "v-p" POINTER   set-type  "Convert value to a POINTER" ] ':p' :
+[ "v-f" FLAG      set-type  "Convert value to a FLAG" ] ':f' :
+[ "v-f" FUNCALL   set-type  "Convert value to a FUNCALL" ] ':x' :
+[ "v-c" REMARK    set-type  "Convert value to a REMARK" ] ':r' :
+[ "v-v" UNKNOWN   set-type  "Convert value to a UNKNOWN" ] ':u' :
+[ "v-vf" type? NUMBER    eq?  "Return true if value is a NUMBER or false otherwise" ] 'number?' :
+[ "v-vf" type? STRING    eq?  "Return true if value is a STRING or false otherwise" ] 'string?' :
+[ "v-vf" type? CHARACTER eq?  "Return true if value is a CHARACTER or false otherwise" ] 'character?' :
+[ "v-vf" type? POINTER   eq?  "Return true if value is a POINTER or false otherwise" ] 'pointer?' :
+[ "v-vf" type? FLAG      eq?  "Return true if value is a FLAG or false otherwise" ] 'flag?' :
+[ "v-vf" type? BYTECODE  eq?  "Return true if value is a BYTECODE or false otherwise" ] 'bytecode?' :
+[ "v-vf" type? REMARK    eq?  "Return true if value is a REMARK or false otherwise" ] 'remark?' :
+[ "v-vf" type? FUNCALL   eq?  "Return true if value is a FUNCALL or false otherwise" ] 'funcall?' :
+[ "v-vf" type? UNKNOWN   eq?  "Return true if value is UNKNOWN or false otherwise" ] 'unknown?' :
 [ "vV-vVv"
   [ dup ] dip swap
   "Put a copy of the second item on top of the stack"
@@ -84,64 +112,68 @@
   "Remove all items from the stack"
 ] 'reset' :
 
+[ "vV-vVvV"
+  over over
+  "Duplicate the top two items on the stack"
+] 'dup-pair' :
+
+[ "vv-"
+  drop drop
+  "Discard the top two items on the stack"
+] 'drop-pair' :
+
+[ "?n-"
+  [ drop ] times
+  "Discard an arbitrary number of items from the stack"
+] 'drop<n>' :
+[ "vvpp-?"
+  [ dip ] dip invoke
+  "Invoke p1 against v1 and p2 against v2"
+] 'bi*' :
+
+[ "vvvppp-?"
+  [ [ swap [ dip ] dip ] dip dip ] dip invoke
+  "Invoke p1 against v1, p2 against v2, and p3 against v3"
+] 'tri*' :
+[ "vvp-?"
+  dup bi*
+  "Invoke p1 against v1 and again against v2"
+] 'bi@' :
+
+[ "vvvp-?"
+  dup dup tri*
+  "Invoke p1 against v1, then v2, then v3"
+] 'tri@' :
 [ "sp-"
   swap :
   "Attach a name to a slice"
 ] '.' :
-
-"Symbolic names for data types"
-[ "-n"  100 "Type constant" ] 'NUMBER' :
-[ "-n"  200 "Type constant" ] 'STRING' :
-[ "-n"  300 "Type constant" ] 'CHARACTER' :
-[ "-n"  400 "Type constant" ] 'POINTER' :
-[ "-n"  500 "Type constant" ] 'FLAG' :
-[ "-n"  600 "Type constant" ] 'BYTECODE' :
-[ "-n"  700 "Type constant" ] 'REMARK' :
-[ "-n"  800 "Type constant" ] 'FUNCALL' :
-[ "-n"    0 "Type constant" ] 'UNKNOWN' :
-
-[ "v-b" BYTECODE  set-type  "Convert value to a BYTECODE" ] ':b' :
-[ "v-n" NUMBER    set-type  "Convert value to a NUMBER" ] ':n' :
-[ "v-s" STRING    set-type  "Convert value to a STRING" ] ':s' :
-[ "v-c" CHARACTER set-type  "Convert value to a CHARACTER" ] ':c' :
-[ "v-p" POINTER   set-type  "Convert value to a POINTER" ] ':p' :
-[ "v-f" FLAG      set-type  "Convert value to a FLAG" ] ':f' :
-[ "v-f" FUNCALL   set-type  "Convert value to a FUNCALL" ] ':x' :
-[ "v-c" REMARK    set-type  "Convert value to a REMARK" ] ':r' :
-[ "v-v" UNKNOWN   set-type  "Convert value to a UNKNOWN" ] ':u' :
-
-[ "v-vf" type? NUMBER    eq?  "Return true if value is a NUMBER or false otherwise" ] 'number?' :
-[ "v-vf" type? STRING    eq?  "Return true if value is a STRING or false otherwise" ] 'string?' :
-[ "v-vf" type? CHARACTER eq?  "Return true if value is a CHARACTER or false otherwise" ] 'character?' :
-[ "v-vf" type? POINTER   eq?  "Return true if value is a POINTER or false otherwise" ] 'pointer?' :
-[ "v-vf" type? FLAG      eq?  "Return true if value is a FLAG or false otherwise" ] 'flag?' :
-[ "v-vf" type? BYTECODE  eq?  "Return true if value is a BYTECODE or false otherwise" ] 'bytecode?' :
-[ "v-vf" type? REMARK    eq?  "Return true if value is a REMARK or false otherwise" ] 'remark?' :
-[ "v-vf" type? FUNCALL   eq?  "Return true if value is a FUNCALL or false otherwise" ] 'funcall?' :
-[ "v-vf" type? UNKNOWN   eq?  "Return true if value is UNKNOWN or false otherwise" ] 'unknown?' :
-
-"Stack Flow"
-[ "vV-vVvV"  over over   "Duplicate the top two items on the stack" ] 'dup-pair' :
-[ "vv-"      drop drop   "Discard the top two items on the stack" ] 'drop-pair' :
-[ "?n-"      [ drop ] times   "Discard an arbitrary number of items from the stack" ] 'drop<n>' :
-[ "q-...n"   depth [ invoke ] dip depth swap -
-  "Execute a quotation, returning a value indicating th stack depth change as a result"
-] 'invoke<depth?>' :
-
 [ "n-n"  [ 1 / ] [ 1 rem ] bi - "Return the smallest integer less than or equal to the starting value" ] 'floor' :
 [ "n-n"  dup floor dup-pair eq? [ drop ] [ nip 1 + ] if "Return the smallest integer greater than or equal to the starting value" ] 'ceil' :
 [ "n-n"  0.5 + floor "Round a number to the nearest integer value" ] 'round' :
 [ "nn-nn" dup-pair rem [ / floor ] dip "Divide and return floored result and remainder" ] '/rem' :
+[ "nn-n"  over over lt? [ nip ] [ drop ] if "Return the greater of two values" ] 'max' :
+[ "nn-n"  over over gt? [ nip ] [ drop ] if "Return the smaller of two values" ] 'min' :
+[ "n-n"   dup -1 * max "Return the absolute value of a number" ] 'abs' :
+[ "nn-..."
+  dup-pair lt?
+    [ [ [ dup 1 + ] dip dup-pair eq? ] until ]
+    [ [ [ dup 1 - ] dip dup-pair eq? ] until ] if
+  drop
+  "Given two values, expand the range"
+] 'range' :
 
-
-"Slice Functions"
+[ "q-...n"   depth [ invoke ] dip depth swap -
+  "Execute a quotation, returning a value indicating th stack depth change as a result"
+] 'invoke<depth?>' :
 [ "np-"   [ get<final-offset> + ] sip set<final-offset>
   "Given a number, adjust the length of the specified slice by the requested amount."
 ] 'adjust-slice-length' :
-
-[ "p-p"   request [ copy ] sip   "Make a copy of a slice, returning a pointer to the copy" ] 'duplicate-slice' :
+[ "p-p"
+  request [ copy ] sip
+  "Make a copy of a slice, returning a pointer to the copy"
+] 'duplicate-slice' :
 [ "p-n"   get<final-offset> 1 +  "Return the length of a slice" ] 'length?' :
-
 [ "pn-p"
   [ dup length? dup ] dip - swap subslice
   "Return a new slice containing the contents of the original slice, including the specified number of values. This copies the rightmost (trailing) elements."
@@ -151,16 +183,25 @@
   0 swap subslice
   "Return a new slice containing the contents of the original slice, including the specified number of values. This copies the leftmost (leading) elements."
 ] 'subslice<left>' :
-
-"Simple variables are just named slices, with functions to access the first element. They're useful for holding single values."
-
-[ "vs-"  [ request [ '-v' :r swap 0 store ] sip [ 1 store ] sip ] dip :
+[ "vv-p"
+  swap request [ 0 store ] sip [ 1 store ] sip
+  "Bind two values into a new slice"
+] 'cons' :
+[ "vp-p"
+  :x cons
+  "Bind a value and a quote, returning a new quote which executes the specified one against the provided value"
+] 'curry' :
+[ "p-p"
+  :x request [ 0 store ] sip
+  "Wrap a pointer into a new quote, converting the pointer into a FUNCALL"
+] 'enquote' :
+[ "vs-"
+  [ '-v' :r swap cons ] dip :
   "Create a variable with an initial value"
 ] 'var!' :
-
 [ "s-"   0 :u swap var! "Create a variable" ] 'var' :
-[ "p-"   0 swap 1 store "Set a variable to a value of 0" ] 'off' :
-[ "p-"   -1 swap 1 store "Set a variable to a value of -1" ] 'on' :
+[ "p-"   0 :f swap 1 store "Set a variable to a value of false" ] 'off' :
+[ "p-"  -1 :f swap 1 store "Set a variable to a value of true" ] 'on' :
 
 [ "np-"  swap over 1 fetch + swap 1 store
   "Increment a variable by the specified amount"
@@ -183,29 +224,6 @@
 [ "pp-"  swap request dup-pair copy swap [ [ invoke ] dip ] dip copy
   "Backup the contents of a slice and remove the pointer from the stack. Execute the quotation. Then restore the contents of the specified slice to their original state."
 ] 'preserve' :
-
-
-"Number functions"
-[ "nn-n"  over over lt? [ nip ] [ drop ] if "Return the greater of two values" ] 'max' :
-[ "nn-n"  over over gt? [ nip ] [ drop ] if "Return the smaller of two values" ] 'min' :
-[ "n-n"   dup -1 * max "Return the absolute value of a number" ] 'abs' :
-
-"The basic bi/tri combinators provided as part of the primitives allow application of multiple quotes to a single data element. Here we add new forms that are very useful."
-"We consider the bi/tri variants to consist of one of three types."
-"Cleave combinators (bi, tri) apply multiple quotations to a single value (or set of values)."
-
-
-"Spread combinators (bi*, tri*) apply multiple quotations to multiple values."
-[ "vvpp-?"   [ dip ] dip invoke "Invoke p1 against v1 and p2 against v2" ] 'bi*' :
-
-[ "vvvppp-?" [ [ swap [ dip ] dip ] dip dip ] dip invoke
-  "Invoke p1 against v1, p2 against v2, and p3 against v3"
-] 'tri*' :
-
-
-"Apply combinators (bi@, tri@) apply a single quotation to multiple values."
-[ "vvp-?"    dup bi* "Invoke p1 against v1 and again against v2" ] 'bi@' :
-[ "vvvp-?"   dup dup tri* "Invoke p1 against v1, then v2, then v3" ] 'tri@' :
 
 
 "Expand the basic conditionals into a more useful set."
@@ -231,15 +249,6 @@
 ] 'types-match?' :
 
 
-"numeric ranges"
-[ "nn-..."
-  dup-pair lt?
-    [ [ [ dup 1 + ] dip dup-pair eq? ] until ]
-    [ [ [ dup 1 - ] dip dup-pair eq? ] until ] if
-  drop
-  "Given two values, expand the range"
-] 'range' :
-
 
 "Misc"
 [ "p-"   invoke<depth?> [ hide-word ] times "Given an array of names, hide each named item" ] 'hide-words' :
@@ -259,65 +268,84 @@
 [ "v-f"  dup to-lowercase eq? "Return true if value is a lowercase string or ASCII character, or false otherwise" ] 'lowercase?' :
 [ "v-f"  dup to-uppercase eq? "Return true if value is an uppercase string or ASCII character, or false otherwise" ] 'uppercase?' :
 [ "p-s"  invoke<depth?> 1 - [ [ :s ] bi@ + ] times "Execute a quotation, constructing a string from the values it returns." ] 'build-string' :
-
-
-"Programatic Creation of Quotes"
-[ "vv-p"  swap request [ 0 store ] sip [ 1 store ] sip
-  "Bind two values into a new slice"
-] 'cons' :
-[ "vp-p"  :x cons "Bind a value and a quote, returning a new quote which executes the specified one against the provided value" ] 'curry' :
-[ "p-p"   :x request [ 0 store ] sip "Wrap a pointer into a new quote, converting the pointer into a FUNCALL" ] 'enquote' :
-
-"Arrays and Operations on Quotations"
 [ "q-v"  0 fetch "Return the first item in a slice" ] 'head' :
 [ "q-q"  1 over length? subslice "Return the second through last items in a slice" ] 'body' :
 [ "p-v"  dup length? 1 - fetch "Return the last item in a slice" ] 'tail' :
-
 [ "p-vv"  [ head ] [ tail ] bi
   "Return the head and tail of a slice"
 ] 'decons' :
-
 [ 'Found'  'Value'  'XT'  'Source'  'Target'  'Offset' ] ::
 [ "q-"
-  @Found [ @Value [ @XT [ @Source [ @Target [ @Offset [ invoke ] dip !Offset ] dip !Target ] dip !Source ] dip !XT ] dip !Value ] dip !Found ] 'localize' :
+  @Found [ @Value [ @XT [ @Source [ @Target [ @Offset [ invoke ] dip !Offset ] dip !Target ] dip !Source ] dip !XT ] dip !Value ] dip !Found
+] 'localize' :
+[ "vp-"
+  :p dup length? store
+  "Append a value to the specified slice. This modifies the original slice."
+] 'push' :
 
-[ "vp-"    :p dup length? store "Append a value to the specified slice. This modifies the original slice." ] 'push' :
-
-[ "p-v"    :p [ dup get<final-offset> fetch ] sip dup length? 2 - swap set<final-offset> "Remove the last value from the specified slice. This modifies the original slice." ] 'pop' :
-
-[ "p-p"    [ head ] [ body ] bi [ push ] sip "Move the head of the slice to the tail" ] 'cycle' :
-
-[ "-p"     request [ pop drop ] sip "Request a slice with no stored values" ] 'request-empty' :
-
-[ "pnp-n"  [ !XT [ duplicate-slice ] dip over length? [ over pop @XT invoke ] times nip ] localize
+[ "p-v"
+  :p [ dup get<final-offset> fetch ] sip dup length? 2 - swap set<final-offset>
+  "Remove the last value from the specified slice. This modifies the original slice."
+] 'pop' :
+[ "p-p"
+  [ head ] [ body ] bi [ push ] sip
+  "Move the head of the slice to the tail"
+] 'cycle' :
+[ "-p"
+  request [ pop drop ] sip
+  "Request a slice with no stored values"
+] 'request-empty' :
+[ "pnp-n"
+  [ !XT
+    [ duplicate-slice ] dip over length? [ over pop @XT invoke ] times nip
+  ] localize
   "Takes a slice, a starting value, and a quote. It executes the quote once for each item in the slice, passing the item and the value to the quote. The quote should consume both and return a new value."
 ] 'reduce' :
-
-[ "pp-?"   [ !XT duplicate-slice !Source 0 !Offset @Source length? [ @Source @Offset fetch @XT invoke &Offset increment ] times ] localize
+[ "pp-?"
+  [ !XT
+    duplicate-slice !Source 0 !Offset
+    @Source length? [ @Source @Offset fetch @XT invoke &Offset increment ] times
+  ] localize
   "Takes a slice and a quotation. It then executes the quote once for each item in the slice, passing the individual items to the quote."
 ] 'for-each' :
-
-[ "pv-f"   false !Found !Value dup length? 0 swap [ dup-pair fetch @Value types-match? [ eq? @Found or :f !Found ] [ drop-pair ] if 1 + ] times drop-pair @Found
+[ "pv-f"
+  false !Found !Value dup length? 0 swap [ dup-pair fetch @Value types-match? [ eq? @Found or :f !Found ] [ drop-pair ] if 1 + ] times drop-pair @Found
   "Given a slice and a value, return true if the value is found in the slice, or false otherwise."
  ] 'contains?' :
-
-[ "pq-p"   [ !XT !Source request-empty !Target 0 !Offset @Source length? [ @Source @Offset fetch @XT invoke [ @Source @Offset fetch @Target push ] if-true &Offset increment ] times @Target ] localize
+[ "pq-p"
+  [ !XT !Source
+    request-empty !Target 0 !Offset
+    @Source length? [ @Source @Offset fetch @XT invoke
+                      [ @Source @Offset fetch @Target push ] if-true
+                      &Offset increment
+                    ] times
+    @Target
+  ] localize
   "Given a slice and a quotation, this will pass each value to the quotation (executing it once per item in the slice). The quotation should return a Boolean flag. If the flag is true, copy the value to a new slice. Otherwise discard it."
 ] 'filter' :
-
-[ "pq-"    [ !XT duplicate-slice !Source 0 !Offset @Source length? [ @Source @Offset fetch @XT invoke @Source @Offset store &Offset increment ] times @Source ] localize
+[ "pq-"
+  [ !XT
+    duplicate-slice !Source 0 !Offset
+    @Source length? [ @Source @Offset fetch @XT invoke
+                      @Source @Offset store &Offset increment
+                    ] times
+    @Source
+  ] localize
   "Given a pointer to an array and a quotation, execute the quotation once for each item in the array. Construct a new array from the value returned by the quotation and return a pointer to it."
 ] 'map' :
-
-[ "p-p"    [ request !Target invoke<depth?> 0 max [ @Target push ] times @Target 1 over length? subslice :p ] localize
+[ "p-p"
+  [ request !Target
+    invoke<depth?> 0 max [ @Target push ] times
+    @Target 1 over length? subslice :p
+  ] localize
   "Invoke a quote and capture the results into a new array"
 ] 'capture-results<in-stack-order>' :
 
-[ "p-p"    capture-results<in-stack-order> reverse "Invoke a quote and capture the results into a new array" ] 'capture-results' :
-
+[ "p-p"
+  capture-results<in-stack-order> reverse
+  "Invoke a quote and capture the results into a new array"
+] 'capture-results' :
 [ 'Found'  'Value'  'XT'  'Source'  'Target'  'Offset'  'localize' ] hide-words
-
-
 [ 'V' 'S' 'O' 'L' ] ::
 
 [ "pv-p|n"
@@ -335,15 +363,19 @@
   "Given a slice and a value, return the offsets the value is located at, or #nan if none are found"
 ] 'indexes' :
 
+[ 'V' 'S' 'O' 'L' ] hide-words
 [ "pv-n"
   indexes dup nan? [ head ] if-false
   "Given a slice and a value, return the offset the value is located at, or #nan if not found"
 ] 'index-of' :
-
-[ 'V' 'S' 'O' 'L' ] hide-words
-
-
-[ "s-f"  vm.dict<names> swap contains? "Return true if the named word exists or false otherwise" ] 'word-exists?' :
+"Functions for trimming leading and trailing whitespace off of a string. The left side trim is iterative; the right side trim is recursive."
+[ "s-s" :s #0 [ dup-pair fetch :n 32 eq? [ 1 + ] dip ] while 1 - [ dup get<final-offset> 1 + ] dip swap subslice :s "Remove leading whitespace from a string" ] 'trim-left' :
+[ "s-s" reverse trim-left reverse :s "Remove trailing whitespace from a string" ] 'trim-right' :
+[ "s-s" trim-right trim-left "Remove leading and trailing whitespace from a string" ] 'trim' :
+[ "s-f"
+  vm.dict<names> swap contains?
+  "Return true if the named word exists or false otherwise"
+] 'word-exists?' :
 
 [ "s-p"
   dup word-exists?
@@ -352,16 +384,27 @@
   "Return a pointer to the named word if it exists, or #nan otherwise"
 ] 'lookup-word' :
 
-[ "p-s"  :p vm.dict<slices> over contains? [ vm.dict<slices> swap index-of vm.dict<names> swap fetch ] [ drop '' ] if "If the pointer corresponds to a named item, return the name. Otherwise return an empty string." ] 'lookup-name' :
+[ "p-s"
+  :p vm.dict<slices> over contains?
+  [ vm.dict<slices> swap index-of vm.dict<names> swap fetch ]
+  [ drop '' ] if
+  "If the pointer corresponds to a named item, return the name. Otherwise return an empty string."
+] 'lookup-name' :
 
-[ "ss-"  swap dup word-exists? [ dup lookup-word swap hide-word swap : ] [ drop ] if "Change a name from s1 to s2" ] 'rename-word' :
+[ "ss-"
+  swap dup word-exists? [ dup lookup-word swap hide-word swap : ] [ drop ] if
+  "Change a name from s1 to s2"
+] 'rename-word' :
+'Pattern' var
 
-"Functions for trimming leading and trailing whitespace off of a string. The left side trim is iterative; the right side trim is recursive."
-[ "s-s" :s #0 [ dup-pair fetch :n 32 eq? [ 1 + ] dip ] while 1 - [ dup get<final-offset> 1 + ] dip swap subslice :s "Remove leading whitespace from a string" ] 'trim-left' :
-[ "s-s" reverse trim-left reverse :s "Remove trailing whitespace from a string" ] 'trim-right' :
-[ "s-s" trim-right trim-left "Remove leading and trailing whitespace from a string" ] 'trim' :
+[ "s-f" @Pattern swap string-contains? ] 'matches' :
 
+[ "s-p"
+  !Pattern vm.dict<names> &matches filter
+  "Return an array of names in the dictionary that match a given substring."
+] 'vm.dict<names-like>' :
 
+[ 'Pattern' 'matches' ] hide-words
 "Scope"
 [ 'Public'  'Private' ] ::
 [ "-" vm.dict<names> !Private "Begin a lexically scoped area" ] '{' :
@@ -378,8 +421,6 @@
   "End a lexically scoped region, removing any headers not specified in the provided array."
 ] '}' :
 [ 'Public'  'Private' ] hide-words
-
-"Vocabularies"
 [ 'with' 'without' 'vocab' '}vocab' '}}' 'vocab.add-word' ] {
   [ 'Vocabulary' ] ::
 
@@ -411,8 +452,6 @@
   [ "-"  vm.dict<names> length? !o "Start a vocabulary block" ] 'vocab{' :
   [ "s-" vm.dict<names> @o over length? subslice swap vocab "End a vocabulary block" ] '}vocab' :
 }
-
-
 [ 'invoke<preserving>' ] {
   [ 'Prior'  'List' ] ::
   [ "qq-"
@@ -427,7 +466,6 @@
     "Executes the code quotation, preserving and restoring the contents of the variables specified."
   ] 'invoke<preserving>' :
 }
-
 [ 'zip' ] {
   [ 'A'  'B'  'X'  'C' ] ::
 
@@ -440,20 +478,6 @@
     "For each item in source1, push the item and the corresponding item from source2 to the stack. Execute the specified code. Push results into a new array, repeating until all items are exhausted. Returns the new array. This expects the code to return a single value as a result. It also assumes that both sources are the same size (or at least that the second does not contain less than the first"
   ] 'zip' :
 }
-
-
-"Hashing functions"
-389 'Hash-Prime' var!
-[ "s-n" 0 swap [ :n xor ] for-each "Hash a string using the XOR algorithim" ] 'hash:xor' :
-[ "s-n" 5381 swap [ :n over -5 shift + + ] for-each "Hash a string using the DJB2 algorithim" ] 'hash:djb2' :
-[ :n over -6 shift + over -16 shift + swap - ] 'hash:sdbm<n>' :
-[ "s-n" 0 swap [ :c swap hash:sdbm<n> ] for-each "Hash a string using the SDBM algorithim" ] 'hash:sdbm' :
-[ "s-b" hash:djb2 "The preferred hash algorithim (defaults to DJB2)" ] 'chosen-hash' :
-[ "s-n" chosen-hash @Hash-Prime rem "Hash a string using chosen-hash and Hash-Prime" ] 'hash' :
-'hash:sdbm<n>' hide-word
-
-
-
 [ 'when' ] {
   [ 'Offset'  'Tests'  'Done' ] ::
 
@@ -468,8 +492,6 @@
     "Takes a pointer to a set of quotations. Each quote in the set should consist of two other quotes: one that returns a flag, and one to be executed if the condition returns true. Executes each until one returns true, then exits."
   ] 'when' :
 }
-
-
 [ 'split'  'join' ] {
   [ 'Source'  'Value'  'Target' ] ::
   [ "n-"  [ @Source 0 ] dip subslice :s ] 'extract' :
@@ -498,12 +520,14 @@
     "Given an array of values and a string, convert each value to a string and merge, using the provided string between them"
   ] 'join' :
 }
-
-[ "s-s"  [ :n 32 128 between? ] filter :s "Remove any non-printable characters from a string" ] 'clean-string' :
-
-[ "sss-s"  [ split ] dip join clean-string "Replace all instances of s2 in s1 with s3" ] 'replace' :
-
-
+[ "s-s"
+  [ :n 32 128 between? ] filter :s
+  "Remove any non-printable characters from a string"
+] 'clean-string' :
+[ "sss-s"
+  [ split ] dip join clean-string
+  "Replace all instances of s2 in s1 with s3"
+] 'replace' :
 [ 'interpolate' ] {
   [ 'Data'  'Source'  'String' ] ::
 
@@ -522,8 +546,6 @@
     "Given an array of values and a string with insertion points, construct a new string, copying the values into the insertion points."
   ] 'interpolate' :
 }
-
-
 [ 'interpolate<cycling>' ] {
   [ 'D'  'S'  'L' ] ::
 
@@ -538,22 +560,6 @@
     "Given an array of values and a string with insertion points, construct a new string, copying the values into the insertion points. If the array of values is less than the number of insertion points, cycle through them again."
   ] 'interpolate<cycling>' :
 }
-
-
-"?"
-[ '?' ] {
-  [ "p-?" &head &tail bi [ remark? [ drop ] if-false ] bi@ ] 'desc' :
-
-  [ "s-s | s-ss"
-    dup word-exists?
-    [ lookup-word desc ]
-    [ 'word "' swap + '" not found' + report-error ] if
-    "Lookup the stack comment and description (if existing) for a named item"
-  ] '?' :
-}
-
-
-"unsorted"
 [ 'stack-values' 'rso' ] {
   'S' var
 
@@ -570,26 +576,14 @@
     "Reverse the order of all items on the stack"
   ] 'rso' :
 }
-
-
-
-[ 'vm.dict<names-like>' ] {
- 'Pattern' var
- [ "s-f" @Pattern swap string-contains? ] 'matches' :
- [ "s-p"
-   !Pattern vm.dict<names> &matches filter
-   "Return an array of names in the dictionary that match a given substring."
- ] 'vm.dict<names-like>' :
-}
-
-
 [ "-n"   2.71828182846 "Mathmatical constant for Euler's Number" ] 'E' :
 [ "-n"   3.14159265359 "Mathmatical constant for PI" ] 'PI' :
 [ "n-n"  E log<n> "Return the base E logarithm of a number" ] 'log' :
 [ "n-n"  10 log<n> "Return the base 10 logarithm of a number" ] 'log10' :
-
-[ "p-p"  [ remark? not nip ] filter "Return a copy of the slice with embedded comments removed" ] 'strip-remarks' :
-
+[ "p-p"
+  [ remark? not nip ] filter
+  "Return a copy of the slice with embedded comments removed"
+] 'strip-remarks' :
 [ 'times<with-index>' ] {
   '_' var
   [ "qq-"
@@ -598,7 +592,6 @@
     "Construct a range from the values in q1, then execute q2 as a for-each against them"
   ] 'times<with-index>' :
 }
-
 [ 'byKey:' ] {
   [ 'S' 'O' 'K' 'M' ] ::
 
@@ -612,3 +605,28 @@
     "Return an offset for a key in a slice of key:value pairs"
   ] 'byKey:' :
 }
+"?"
+[ '?' ] {
+  [ "p-?" &head &tail bi [ remark? [ drop ] if-false ] bi@ ] 'desc' :
+
+  [ "s-s | s-ss"
+    dup word-exists?
+    [ lookup-word desc ]
+    [ 'word "' swap + '" not found' + report-error ] if
+    "Lookup the stack comment and description (if existing) for a named item"
+  ] '?' :
+}
+"Hashing functions"
+389 'Hash-Prime' var!
+[ "s-n" 0 swap [ :n xor ] for-each "Hash a string using the XOR algorithim" ] 'hash:xor' :
+[ "s-n" 5381 swap [ :n over -5 shift + + ] for-each "Hash a string using the DJB2 algorithim" ] 'hash:djb2' :
+[ :n over -6 shift + over -16 shift + swap - ] 'hash:sdbm<n>' :
+[ "s-n" 0 swap [ :c swap hash:sdbm<n> ] for-each "Hash a string using the SDBM algorithim" ] 'hash:sdbm' :
+[ "s-b" hash:djb2 "The preferred hash algorithim (defaults to DJB2)" ] 'chosen-hash' :
+[ "s-n" chosen-hash @Hash-Prime rem "Hash a string using chosen-hash and Hash-Prime" ] 'hash' :
+'hash:sdbm<n>' hide-word
+[ "...p-..."
+  [ stack-values [ reset ] dip ] dip swap [ invoke ] dip &nop for-each
+  "Invoke a quote, making a copy of the stack contents which will be removed
+   prior to invocation and restored after the quote returns."
+] 'invoke<preserving-stack>' :
