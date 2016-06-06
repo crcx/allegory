@@ -331,13 +331,16 @@ def opcodes(slice, offset, opcode):
     elif opcode == 9003:
         name = slice_to_string(stack_pop())
         load_file(name)
-        global ctags
-        ctags = ctags + get_tags_in(name)
-        n = []
-        for tag in ctags:
-            if not tag in n:
-                n.append(tag)
-        ctags = n
+        try:
+            global ctags
+            ctags = ctags + get_tags_in(name)
+            n = []
+            for tag in ctags:
+                if not tag in n:
+                    n.append(tag)
+            ctags = n
+        except:
+            pass
     elif opcode == 9004:
         save_snapshot(slice_to_string(stack_pop()))
     elif opcode == 9005:
