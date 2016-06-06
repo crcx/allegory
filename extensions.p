@@ -9,7 +9,7 @@
 
 "-+-+-++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-"
 'Files~' vocab{
-  [ "string:name string:mode - number:file-id"  `201  "Open a file. Valid modes include R, W, and A" ] 'open-file' :
+  [ "string:name string:mode - number:file-id"  `201  "Open a file. Valid modes include r, w, and a" ] 'open-file' :
   [ "number:file-id -"                          `202  "Close an open file" ] 'close-file' :
   [ "number:file-id - character"                `203  "Read a character from a file" ] 'read-file' :
   [ "character number:file-id -"                `204  "Write a character to a file" ] 'write-file' :
